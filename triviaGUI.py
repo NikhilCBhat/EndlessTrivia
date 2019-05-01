@@ -6,8 +6,9 @@ from string import ascii_lowercase
 from random import shuffle
 
 ## -- Wiki Variables -- ##
+
 topic = ""
-alternate_options = 3
+alternate_options = 1
 alphabet = dict(enumerate(ascii_lowercase, 1))
 difficulty2Options = {'easy': 3, 'medium': 4, 'hard': 5}
 score = 0
@@ -32,6 +33,7 @@ def answered(a):
 
 ## Generates the next question
 def newQuestion():
+    global topic
     topic = wikipedia.random(1)
 
     question = None
@@ -46,10 +48,8 @@ def newQuestion():
 
     return question.replace("_ _", "_")
 
-## Generates the next answer
+## Generates the next answers
 def newAnswers():
-    global topic
-    global alternate_options
     alternates = wikipedia.random(alternate_options)
     choices = []
     choices.extend(alternates)
@@ -60,6 +60,8 @@ def newAnswers():
     return answers
 
 ## -- Frame Variables --##
+
+## Size & Color
 WELCOME_HEIGHT = 600
 WELCOME_WIDTH = 800
 GAME_HEIGHT = 800
@@ -68,7 +70,7 @@ WELCOME_GEOMETRY = getGeometry(WELCOME_WIDTH, WELCOME_HEIGHT)
 GAME_GEOMETRY = getGeometry(GAME_WIDTH, GAME_HEIGHT)
 BACKGROUND_COLOR = 'deep sky blue'
 
-## -- Initial Frame -- ##
+## Window & Label
 welcomeWindow = Tk()
 welcomeWindow.title("endlessTrivia")
 welcomeWindow.geometry(WELCOME_GEOMETRY)
