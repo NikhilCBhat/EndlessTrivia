@@ -92,7 +92,7 @@ def startGame(difficulty):
     scoreLabel = Label(gameWindow, text=score, anchor="center", font=("Helvetica", 20), bg=BACKGROUND_COLOR)
     scoreLabel.place(x=GAME_WIDTH*0.9, y=GAME_HEIGHT*0.9, anchor="center")
     buttons = dict.fromkeys([i for i in range(alternate_options)])
-    
+
     ## Update the text on the screen, on-click
     def updateText():
         questionLabel.configure(text=currentQuestion)
@@ -102,7 +102,7 @@ def startGame(difficulty):
                 buttons[key].configure(text=currentAnswers[key])
         gameWindow.after(1, updateText)
     updateText()
-    
+
     ## Place the buttons
     for key in buttons:
         buttons[key] = Button(gameWindow, text=currentAnswers[key], command=partial(answered, key), bg='powder blue', font=("Helvetica", 20))
