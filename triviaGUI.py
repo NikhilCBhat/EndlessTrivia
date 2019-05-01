@@ -2,14 +2,12 @@ import tkinter
 from tkinter import *
 import wikipedia
 from functools import partial
-from string import ascii_lowercase
 from random import shuffle
 
 ## -- Wiki Variables -- ##
 
 topic = ""
 alternate_options = 1
-alphabet = dict(enumerate(ascii_lowercase, 1))
 difficulty2Options = {'easy': 3, 'medium': 4, 'hard': 5}
 score = 0
 currentAnswers = {}
@@ -99,14 +97,14 @@ def startGame(difficulty):
     def updateText():
         questionLabel.configure(text=currentQuestion)
         scoreLabel.configure(text=score)
-        for key in buttons.keys():
+        for key in buttons:
             if buttons[key] is not None:
                 buttons[key].configure(text=currentAnswers[key])
         gameWindow.after(1, updateText)
     updateText()
     
     ## Place the buttons
-    for key in buttons.keys():
+    for key in buttons:
         buttons[key] = Button(gameWindow, text=currentAnswers[key], command=partial(answered, key), bg='powder blue', font=("Helvetica", 20))
         buttons[key].place(x = GAME_WIDTH/2, y = GAME_HEIGHT*(0.3+key/10), anchor='center')
 
@@ -116,7 +114,7 @@ if __name__ == "__main__":
     currentAnswers = newAnswers()
 
     i = 1
-    for key in difficulty2Options.keys():
+    for key in difficulty2Options:
         button = Button(welcomeWindow, text=key, command=partial(startGame, key), bg='powder blue', font=("Helvetica", 30))
         button.place(x=WELCOME_WIDTH/(len(difficulty2Options) + 1)*i , y=WELCOME_HEIGHT*0.67, anchor="center")
         i += 1
