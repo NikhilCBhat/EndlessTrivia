@@ -11,7 +11,7 @@ score = 0
 question = ""
 difficulty2Options = {'easy': 3, 'medium': 4, 'hard': 5}
 
-## -- Main -- ## 
+## -- Main -- ##
 if __name__ == '__main__':
 
     ## Keep playing the game
