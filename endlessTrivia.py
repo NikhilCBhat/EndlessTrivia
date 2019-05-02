@@ -38,7 +38,11 @@ if __name__ == '__main__':
             print("Sorry, try again!")
 
         for x in topic.split():
-            question = question.replace(x, "____")
+            pattern = re.compile('[\W_]+')
+            x = pattern.sub('', x)
+            print(x)
+            reg = re.compile(r"\b%s\b" % x, re.IGNORECASE)
+            question = reg.sub("_____", question)
         question = question.replace("_ _", "_")
 
         ## Get the answers
