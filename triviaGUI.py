@@ -7,7 +7,7 @@ from random import shuffle
 ## -- Wiki Variables -- ##
 
 topic = ""
-alternate_options = 1
+alternate_options = 2
 difficulty2Options = {'easy': 3, 'medium': 4, 'hard': 5}
 score = 0
 currentAnswers = {}
@@ -21,12 +21,12 @@ def getGeometry(w, h):
 
 ## Runs when an answer choice is made
 def answered(a):
-    global currentQuestion
-    currentQuestion = newQuestion()
     global currentAnswers
     if currentAnswers[a] == topic:
         global score
         score += 1
+    global currentQuestion
+    currentQuestion = newQuestion()
     currentAnswers = newAnswers()
 
 ## Generates the next question
@@ -87,11 +87,11 @@ def startGame(difficulty):
     gameWindow = Toplevel(welcomeWindow)
     gameWindow.geometry(GAME_GEOMETRY)
     gameWindow.configure(background=BACKGROUND_COLOR)
-    questionLabel = Label(gameWindow, text=currentQuestion, anchor="center", font=("Helvetica", 20), bg=BACKGROUND_COLOR)
+    questionLabel = Label(gameWindow, text=currentQuestion, anchor="center", font=("Helvetica", 20), wraplength=GAME_WIDTH*0.8, justify="center", bg=BACKGROUND_COLOR)
     questionLabel.place(x=GAME_WIDTH/2, y=GAME_HEIGHT*0.1, anchor="center")
     scoreLabel = Label(gameWindow, text=score, anchor="center", font=("Helvetica", 20), bg=BACKGROUND_COLOR)
     scoreLabel.place(x=GAME_WIDTH*0.9, y=GAME_HEIGHT*0.9, anchor="center")
-    buttons = dict.fromkeys([i for i in range(alternate_options)])
+    buttons = dict.fromkeys([i for i in range(alternate_options-1)])
 
     ## Update the text on the screen, on-click
     def updateText():
