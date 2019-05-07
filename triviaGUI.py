@@ -7,7 +7,7 @@ from random import shuffle
 ## -- Wiki Variables -- ##
 
 topic = ""
-alternate_options = 2
+alternate_options = 7
 difficulty2Options = {'easy': 3, 'medium': 4, 'hard': 5}
 score = 0
 currentAnswers = {}
@@ -42,7 +42,10 @@ def newQuestion():
             print(e)
 
     for x in topic.split():
-        question = question.replace(x, "____")
+        pattern = re.compile('[\W_]+')
+        x = pattern.sub('', x)
+        reg = re.compile(r"\b%s\b" % x, re.IGNORECASE)
+        question = reg.sub("_____", question)
 
     return question.replace("_ _", "_")
 
@@ -73,15 +76,19 @@ welcomeWindow = Tk()
 welcomeWindow.title("endlessTrivia")
 welcomeWindow.geometry(WELCOME_GEOMETRY)
 welcomeWindow.configure(background=BACKGROUND_COLOR)
-titleLabel = Label(welcomeWindow, text="~ Title ~", anchor="center", font=("Helvetica", 62), bg=BACKGROUND_COLOR)
+titleLabel = Label(welcomeWindow, text="~ Endless Trivia ~", anchor="center", font=("Helvetica", 62), bg=BACKGROUND_COLOR)
 titleLabel.place(x=WELCOME_WIDTH/2, y=WELCOME_HEIGHT*0.3, anchor="center")
-
+# playersSlider = Scale(welcomeWindow, from_=0, to=200, orient='horizontal', font=("Helvetica", 20), bg=BACKGROUND_COLOR)
+# playersSlider.place(x=WELCOME_WIDTH/2, y=WELCOME_HEIGHT*0.8, anchor="center")
+buttons = None
 ## -- Run the Game -- ##
 def startGame(difficulty):
+    global buttons
 
     ## Update the number of options
     global alternate_options
     alternate_options = difficulty2Options[difficulty]
+    print(difficulty, alternate_options)
 
     ## Setup the Game Window
     gameWindow = Toplevel(welcomeWindow)
@@ -91,18 +98,20 @@ def startGame(difficulty):
     questionLabel.place(x=GAME_WIDTH/2, y=GAME_HEIGHT*0.1, anchor="center")
     scoreLabel = Label(gameWindow, text=score, anchor="center", font=("Helvetica", 20), bg=BACKGROUND_COLOR)
     scoreLabel.place(x=GAME_WIDTH*0.9, y=GAME_HEIGHT*0.9, anchor="center")
-    buttons = dict.fromkeys([i for i in range(alternate_options-1)])
-
+    buttons = dict.fromkeys([i for i in range(alternate_options)])
     ## Update the text on the screen, on-click
     def updateText():
+        global buttons
         questionLabel.configure(text=currentQuestion)
-        scoreLabel.configure(text=score)
+        scoreLabel.configure(text="Score: %d"%score)
         for key in buttons:
             if buttons[key] is not None:
                 buttons[key].configure(text=currentAnswers[key])
         gameWindow.after(1, updateText)
     updateText()
-
+    print(buttons)
+    print(currentAnswers)
+    print(currentQuestion)
     ## Place the buttons
     for key in buttons:
         buttons[key] = Button(gameWindow, text=currentAnswers[key], command=partial(answered, key), bg='powder blue', font=("Helvetica", 20))
@@ -116,7 +125,7 @@ if __name__ == "__main__":
     i = 1
     for key in difficulty2Options:
         button = Button(welcomeWindow, text=key, command=partial(startGame, key), bg='powder blue', font=("Helvetica", 30))
-        button.place(x=WELCOME_WIDTH/(len(difficulty2Options) + 1)*i , y=WELCOME_HEIGHT*0.67, anchor="center")
+        button.place(x=WELCOME_WIDTH/(len(difficulty2Options) + 1)*i , y=WELCOME_HEIGHT*0.6, anchor="center")
         i += 1
 
     welcomeWindow.mainloop()
