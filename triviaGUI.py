@@ -4,12 +4,17 @@ import wikipedia
 from functools import partial
 from random import shuffle
 
-## -- Wiki Variables -- ##
+## -- Variables -- ##
 
+# Constants
+ALTERNATE_OPTIONS = 7
+NUM_PLAYERS = 10
+
+# Variables
 topic = ""
-alternate_options = 7
 difficulty2Options = {'easy': 3, 'medium': 4, 'hard': 5}
-score = 0
+score = []
+currentTeam = 0
 currentAnswers = {}
 currentQuestion = ""
 
@@ -22,12 +27,15 @@ def getGeometry(w, h):
 ## Runs when an answer choice is made
 def answered(a):
     global currentAnswers
+    global currentTeam
     if currentAnswers[a] == topic:
         global score
-        score += 1
+        score[currentTeam] += 1
     global currentQuestion
     currentQuestion = newQuestion()
     currentAnswers = newAnswers()
+    currentTeam += 1
+    currentTeam  = currentTeam%NUM_PLAYERS
 
 ## Generates the next question
 def newQuestion():
@@ -51,7 +59,7 @@ def newQuestion():
 
 ## Generates the next answers
 def newAnswers():
-    alternates = wikipedia.random(alternate_options)
+    alternates = wikipedia.random(ALTERNATE_OPTIONS)
     choices = []
     choices.extend(alternates)
     choices.append(topic)
@@ -77,18 +85,25 @@ welcomeWindow.title("endlessTrivia")
 welcomeWindow.geometry(WELCOME_GEOMETRY)
 welcomeWindow.configure(background=BACKGROUND_COLOR)
 titleLabel = Label(welcomeWindow, text="~ Endless Trivia ~", anchor="center", font=("Helvetica", 62), bg=BACKGROUND_COLOR)
-titleLabel.place(x=WELCOME_WIDTH/2, y=WELCOME_HEIGHT*0.3, anchor="center")
-# playersSlider = Scale(welcomeWindow, from_=0, to=200, orient='horizontal', font=("Helvetica", 20), bg=BACKGROUND_COLOR)
-# playersSlider.place(x=WELCOME_WIDTH/2, y=WELCOME_HEIGHT*0.8, anchor="center")
+titleLabel.place(x=WELCOME_WIDTH/2, y=WELCOME_HEIGHT*0.2, anchor="center")
+playersLabel = Label(welcomeWindow, text="Number of Players:", anchor="center", font=("Helvetica", 25), bg=BACKGROUND_COLOR)
+playersLabel.place(x=WELCOME_WIDTH*0.2, y=WELCOME_HEIGHT*0.7, anchor="center")
+playersSlider = Scale(welcomeWindow, from_=1, to=20, orient='horizontal', length=WELCOME_WIDTH*0.5, font=("Helvetica", 20), bg=BACKGROUND_COLOR)
+playersSlider.place(x=WELCOME_WIDTH*0.65, y=WELCOME_HEIGHT*0.7, anchor="center")
 buttons = None
 ## -- Run the Game -- ##
 def startGame(difficulty):
     global buttons
-
+    global NUM_PLAYERS
+    NUM_PLAYERS = playersSlider.get()
+    global score
+    print(NUM_PLAYERS)
+    score = [0] * NUM_PLAYERS
+    print(score)
     ## Update the number of options
-    global alternate_options
-    alternate_options = difficulty2Options[difficulty]
-    print(difficulty, alternate_options)
+    global ALTERNATE_OPTIONS
+    ALTERNATE_OPTIONS = difficulty2Options[difficulty]
+    print(difficulty, ALTERNATE_OPTIONS)
 
     ## Setup the Game Window
     gameWindow = Toplevel(welcomeWindow)
@@ -96,14 +111,14 @@ def startGame(difficulty):
     gameWindow.configure(background=BACKGROUND_COLOR)
     questionLabel = Label(gameWindow, text=currentQuestion, anchor="center", font=("Helvetica", 20), wraplength=GAME_WIDTH*0.8, justify="center", bg=BACKGROUND_COLOR)
     questionLabel.place(x=GAME_WIDTH/2, y=GAME_HEIGHT*0.1, anchor="center")
-    scoreLabel = Label(gameWindow, text=score, anchor="center", font=("Helvetica", 20), bg=BACKGROUND_COLOR)
+    scoreLabel = Label(gameWindow, text=score[currentTeam], anchor="center", font=("Helvetica", 20), bg=BACKGROUND_COLOR)
     scoreLabel.place(x=GAME_WIDTH*0.9, y=GAME_HEIGHT*0.9, anchor="center")
-    buttons = dict.fromkeys([i for i in range(alternate_options)])
+    buttons = dict.fromkeys([i for i in range(ALTERNATE_OPTIONS)])
     ## Update the text on the screen, on-click
     def updateText():
         global buttons
         questionLabel.configure(text=currentQuestion)
-        scoreLabel.configure(text="Score: %d"%score)
+        scoreLabel.configure(text="Team %d Score: %d"%(currentTeam+1, score[currentTeam]))
         for key in buttons:
             if buttons[key] is not None:
                 buttons[key].configure(text=currentAnswers[key])
@@ -125,7 +140,7 @@ if __name__ == "__main__":
     i = 1
     for key in difficulty2Options:
         button = Button(welcomeWindow, text=key, command=partial(startGame, key), bg='powder blue', font=("Helvetica", 30))
-        button.place(x=WELCOME_WIDTH/(len(difficulty2Options) + 1)*i , y=WELCOME_HEIGHT*0.6, anchor="center")
+        button.place(x=WELCOME_WIDTH/(len(difficulty2Options) + 1)*i , y=WELCOME_HEIGHT*0.5, anchor="center")
         i += 1
 
     welcomeWindow.mainloop()
