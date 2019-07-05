@@ -1,3 +1,8 @@
-<p *ngIf='!finished'>{{currentIndex}}</p>
+<div id='question' *ngIf='!finished'>
+    <div id='question-lister' *ngFor='let answer of currentQuestion.allAnswers; let i = index'>
+        <p [class]='answerStates[i]'>{{currentIndex}}</p>
+    </div>
+</div>
+
 <button (click)='nextQuestion()'>Next</button>
 <button (click)='prevQuestion()'>Prev</button>
