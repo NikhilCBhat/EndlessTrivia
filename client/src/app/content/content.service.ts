@@ -19,4 +19,8 @@ export class ContentService {
             return this.currentIndex;
         }
     }
+
+    updateQuestionWithUserInput(update, index) {
+        this.questions.splice(index, 1, update);
+    }
 }
