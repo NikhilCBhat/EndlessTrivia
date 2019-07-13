@@ -3,11 +3,14 @@ Ideal functions for Website
 '''
 import re
 import wikipedia
+import random
 
 class QuestionObject(object):
     def __init__(self, numIncorrect=5):
         self.correctAnswer = wikipedia.random(1)
-        self.wrongAnswers = wikipedia.random(numIncorrect)
+        self.allAnswers = wikipedia.random(numIncorrect)
+        self.allAnswers.append(self.correctAnswer)
+        random.shuffle(self.allAnswers)
         self.question = None
         while self.question is None:
             try:
