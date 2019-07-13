@@ -19,7 +19,7 @@ class QuestionObject(object):
                 pass
 
         self.question = self.replaceWithBlanks(self.correctAnswer, self.question)
-    
+
     def replaceWithBlanks(self, toReplace, sentence):
         for x in toReplace.split():
             pattern = re.compile(r'[\W_]+')
@@ -28,8 +28,13 @@ class QuestionObject(object):
             sentence = reg.sub("_____", sentence)
         return sentence.replace("_ _", "_")
 
+    def printQuestion(self):
+        print(self.question)
+        for i,v in enumerate(self.allAnswers):
+            print(str(i+1)+".",v)
+
 class Player(object):
-    def __init__(self, name, score):
+    def __init__(self, name="", score=0):
         self.name = name
         self.score = score
     def __repr__(self):
